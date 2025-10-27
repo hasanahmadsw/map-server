@@ -103,15 +103,37 @@ export class ProjectsService {
       // Associate services if provided
       if (serviceIds && serviceIds.length > 0) {
         const services = await trx.getRepository(ServiceEntity).findBy({ id: In(serviceIds) });
-        savedProject.services = services;
-        await trx.getRepository(ProjectEntity).save(savedProject);
+        if (services.length !== serviceIds.length) {
+          const foundIds = services.map((s) => s.id);
+          const missingIds = serviceIds.filter((id) => !foundIds.includes(id));
+          throw new BadRequestException(`Services with IDs ${missingIds.join(', ')} not found`);
+        }
+
+        // Insert service-project relationships directly
+        for (const service of services) {
+          await trx.query('INSERT INTO project_services ("projectId", "serviceId") VALUES ($1, $2)', [
+            savedProject.id,
+            service.id,
+          ]);
+        }
       }
 
       // Associate solutions if provided
       if (solutionIds && solutionIds.length > 0) {
         const solutions = await trx.getRepository(SolutionEntity).findBy({ id: In(solutionIds) });
-        savedProject.solutions = solutions;
-        await trx.getRepository(ProjectEntity).save(savedProject);
+        if (solutions.length !== solutionIds.length) {
+          const foundIds = solutions.map((s) => s.id);
+          const missingIds = solutionIds.filter((id) => !foundIds.includes(id));
+          throw new BadRequestException(`Solutions with IDs ${missingIds.join(', ')} not found`);
+        }
+
+        // Insert solution-project relationships directly
+        for (const solution of solutions) {
+          await trx.query('INSERT INTO solution_projects ("projectId", "solutionId") VALUES ($1, $2)', [
+            savedProject.id,
+            solution.id,
+          ]);
+        }
       }
 
       return savedProject.id;
@@ -261,14 +283,48 @@ export class ProjectsService {
 
     // Handle service associations
     if (updateProjectDto.serviceIds !== undefined) {
-      const services = await this.serviceRepository.findBy({ id: In(updateProjectDto.serviceIds) });
-      project.services = services;
+      // Remove existing service associations
+      await this.dataSource.query('DELETE FROM project_services WHERE "projectId" = $1', [project.id]);
+
+      if (updateProjectDto.serviceIds.length > 0) {
+        const services = await this.serviceRepository.findBy({ id: In(updateProjectDto.serviceIds) });
+        if (services.length !== updateProjectDto.serviceIds.length) {
+          const foundIds = services.map((s) => s.id);
+          const missingIds = updateProjectDto.serviceIds.filter((id) => !foundIds.includes(id));
+          throw new BadRequestException(`Services with IDs ${missingIds.join(', ')} not found`);
+        }
+
+        // Insert new service-project relationships
+        for (const service of services) {
+          await this.dataSource.query('INSERT INTO project_services ("projectId", "serviceId") VALUES ($1, $2)', [
+            project.id,
+            service.id,
+          ]);
+        }
+      }
     }
 
     // Handle solution associations
     if (updateProjectDto.solutionIds !== undefined) {
-      const solutions = await this.solutionRepository.findBy({ id: In(updateProjectDto.solutionIds) });
-      project.solutions = solutions;
+      // Remove existing solution associations
+      await this.dataSource.query('DELETE FROM solution_projects WHERE "projectId" = $1', [project.id]);
+
+      if (updateProjectDto.solutionIds.length > 0) {
+        const solutions = await this.solutionRepository.findBy({ id: In(updateProjectDto.solutionIds) });
+        if (solutions.length !== updateProjectDto.solutionIds.length) {
+          const foundIds = solutions.map((s) => s.id);
+          const missingIds = updateProjectDto.solutionIds.filter((id) => !foundIds.includes(id));
+          throw new BadRequestException(`Solutions with IDs ${missingIds.join(', ')} not found`);
+        }
+
+        // Insert new solution-project relationships
+        for (const solution of solutions) {
+          await this.dataSource.query('INSERT INTO solution_projects ("projectId", "solutionId") VALUES ($1, $2)', [
+            project.id,
+            solution.id,
+          ]);
+        }
+      }
     }
 
     // Handle date fields

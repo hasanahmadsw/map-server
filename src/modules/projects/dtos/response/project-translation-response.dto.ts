@@ -1,5 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { LanguageEntity } from '../../../languages/entities/language.entity';
+import { ProjectChallengeResponseDto } from './project-challenge-response.dto';
+import { ProjectResultResponseDto } from './project-result-response.dto';
 
 export class ProjectTranslationResponseDto {
   @Expose()
@@ -28,16 +30,12 @@ export class ProjectTranslationResponseDto {
   };
 
   @Expose()
-  challenges?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectChallengeResponseDto)
+  challenges?: ProjectChallengeResponseDto[];
 
   @Expose()
-  results?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectResultResponseDto)
+  results?: ProjectResultResponseDto[];
 
   @Expose()
   @Type(() => LanguageEntity)

@@ -7,6 +7,7 @@ import {
   OneToMany,
   Index,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { ProjectTranslationEntity } from './project-translation.entity';
 import { ServiceEntity } from '../../services/entities/service.entity';
@@ -61,9 +62,19 @@ export class ProjectEntity {
   translations: ProjectTranslationEntity[];
 
   @ManyToMany(() => ServiceEntity, (service) => service.projects)
+  @JoinTable({
+    name: 'project_services',
+    joinColumn: { name: 'projectId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'serviceId', referencedColumnName: 'id' },
+  })
   services: ServiceEntity[];
 
   @ManyToMany(() => SolutionEntity, (solution) => solution.projects)
+  @JoinTable({
+    name: 'project_solutions',
+    joinColumn: { name: 'projectId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'solutionId', referencedColumnName: 'id' },
+  })
   solutions: SolutionEntity[];
 
   @CreateDateColumn()

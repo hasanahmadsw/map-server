@@ -1,6 +1,8 @@
 import { IsString, IsNotEmpty, IsOptional, IsObject, IsArray, ValidateNested } from 'class-validator';
 import { IsLanguageCode } from 'src/common';
 import { Type } from 'class-transformer';
+import { ProjectChallengeRequestDto } from './project-challenge-request.dto';
+import { ProjectResultRequestDto } from './project-result-request.dto';
 
 export class CreateProjectTranslationDto {
   @IsLanguageCode()
@@ -29,16 +31,12 @@ export class CreateProjectTranslationDto {
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  challenges?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectChallengeRequestDto)
+  challenges?: ProjectChallengeRequestDto[];
 
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  results?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectResultRequestDto)
+  results?: ProjectResultRequestDto[];
 }

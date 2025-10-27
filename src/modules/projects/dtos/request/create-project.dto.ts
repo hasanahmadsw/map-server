@@ -10,9 +10,12 @@ import {
   IsInt,
   IsDateString,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
 import { IsLanguageCode, IsLanguageCodeArray } from 'src/common';
 import { Type } from 'class-transformer';
+import { ProjectChallengeRequestDto } from './project-challenge-request.dto';
+import { ProjectResultRequestDto } from './project-result-request.dto';
 
 export class CreateProjectDto {
   @IsString()
@@ -46,17 +49,15 @@ export class CreateProjectDto {
 
   @IsArray()
   @IsOptional()
-  challenges?: {
-    title: string;
-    description: string;
-  }[];
+  @ValidateNested({ each: true })
+  @Type(() => ProjectChallengeRequestDto)
+  challenges?: ProjectChallengeRequestDto[];
 
   @IsArray()
   @IsOptional()
-  results?: {
-    title: string;
-    description: string;
-  }[];
+  @ValidateNested({ each: true })
+  @Type(() => ProjectResultRequestDto)
+  results?: ProjectResultRequestDto[];
 
   @IsBoolean()
   @IsOptional()

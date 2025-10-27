@@ -52,6 +52,11 @@ export class SolutionEntity {
   services: ServiceEntity[];
 
   @ManyToMany(() => ProjectEntity, (project) => project.solutions)
+  @JoinTable({
+    name: 'solution_projects',
+    joinColumn: { name: 'solutionId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'projectId', referencedColumnName: 'id' },
+  })
   projects: ProjectEntity[];
 
   @CreateDateColumn()

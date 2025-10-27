@@ -1,5 +1,7 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ProjectTranslationResponseDto } from './project-translation-response.dto';
+import { ProjectChallengeResponseDto } from './project-challenge-response.dto';
+import { ProjectResultResponseDto } from './project-result-response.dto';
 import { ServiceResponseDto } from 'src/modules/services/dtos/response/service-response.dto';
 import { SolutionResponseDto } from 'src/modules/solutions/dtos/response/solution-response.dto';
 
@@ -65,16 +67,12 @@ export class ProjectResponseDto {
   };
 
   @Expose()
-  challenges?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectChallengeResponseDto)
+  challenges?: ProjectChallengeResponseDto[];
 
   @Expose()
-  results?: {
-    title: string;
-    description: string;
-  }[];
+  @Type(() => ProjectResultResponseDto)
+  results?: ProjectResultResponseDto[];
 
   @Expose()
   @Type(() => ServiceResponseDto)
