@@ -11,7 +11,7 @@ import {
 } from 'class-validator';
 import { IsLanguageCode, IsLanguageCodeArray } from 'src/common';
 import { Type } from 'class-transformer';
-import { SubService } from '../../interfaces/sub-service.interface';
+import { CreateSubServiceDto } from './create-sub-service.dto';
 
 export class CreateServiceDto {
   @IsString()
@@ -46,8 +46,8 @@ export class CreateServiceDto {
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => Object)
-  subServices?: SubService[];
+  @Type(() => CreateSubServiceDto)
+  subServices?: CreateSubServiceDto[];
 
   @IsBoolean()
   @IsOptional()

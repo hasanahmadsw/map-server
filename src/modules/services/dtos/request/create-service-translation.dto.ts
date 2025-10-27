@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty, IsOptional, IsNumber, Length, IsObject, IsArray, ValidateNested } from 'class-validator';
 import { IsLanguageCode } from 'src/common';
 import { Type } from 'class-transformer';
-import { SubService } from '../../interfaces/sub-service.interface';
+import { CreateSubServiceDto } from './create-sub-service.dto';
 
 export class CreateServiceTranslationDto {
   @IsLanguageCode()
@@ -30,6 +30,6 @@ export class CreateServiceTranslationDto {
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => Object)
-  subServices?: SubService[];
+  @Type(() => CreateSubServiceDto)
+  subServices?: CreateSubServiceDto[];
 }

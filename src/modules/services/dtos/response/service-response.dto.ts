@@ -1,6 +1,6 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ServiceTranslationResponseDto } from './service-translation-response.dto';
-import { SubService } from '../../interfaces/sub-service.interface';
+import { SubServiceResponseDto } from './sub-service-response.dto';
 
 @Exclude()
 export class ServiceResponseDto {
@@ -46,7 +46,8 @@ export class ServiceResponseDto {
   };
 
   @Expose()
-  subServices?: SubService[];
+  @Type(() => SubServiceResponseDto)
+  subServices?: SubServiceResponseDto[];
 
   @Expose()
   @Type(() => ServiceTranslationResponseDto)

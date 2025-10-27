@@ -1,6 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { LanguageEntity } from '../../../languages/entities/language.entity';
-import { SubService } from '../../interfaces/sub-service.interface';
+import { SubServiceResponseDto } from './sub-service-response.dto';
 
 export class ServiceTranslationResponseDto {
   @Expose()
@@ -29,7 +29,8 @@ export class ServiceTranslationResponseDto {
   };
 
   @Expose()
-  subServices?: SubService[];
+  @Type(() => SubServiceResponseDto)
+  subServices?: SubServiceResponseDto[];
 
   @Expose()
   @Type(() => LanguageEntity)
