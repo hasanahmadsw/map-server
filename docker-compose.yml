@@ -1,0 +1,12 @@
+services:
+  map:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: map
+    expose:
+      - "80"
+    env_file:
+      - ./env/.env
+    restart: always
+    mem_limit: 4096m
