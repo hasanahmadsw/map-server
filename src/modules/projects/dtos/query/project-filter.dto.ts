@@ -1,7 +1,7 @@
-import { IsOptional, IsString, IsBoolean, IsNumber, Min, IsInt } from 'class-validator';
+import { IsOptional, IsString, IsBoolean, IsNumber, Min, IsInt, IsDateString } from 'class-validator';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 
-export class ServiceFilterDto extends PaginationDto {
+export class ProjectFilterDto extends PaginationDto {
   @IsOptional()
   @IsString()
   search?: string;
@@ -28,12 +28,32 @@ export class ServiceFilterDto extends PaginationDto {
   order?: number;
 
   @IsOptional()
+  @IsString()
+  clientName?: string;
+
+  @IsOptional()
+  @IsString()
+  technology?: string;
+
+  @IsOptional()
+  @IsDateString()
+  startDateFrom?: string;
+
+  @IsOptional()
+  @IsDateString()
+  startDateTo?: string;
+
+  @IsOptional()
+  @IsInt()
+  serviceId?: number;
+
+  @IsOptional()
   @IsInt()
   solutionId?: number;
 
   @IsOptional()
   @IsString()
-  sortBy?: 'createdAt' | 'updatedAt' | 'viewCount' | 'name' | 'order';
+  sortBy?: 'createdAt' | 'updatedAt' | 'viewCount' | 'name' | 'order' | 'startDate';
 
   @IsOptional()
   @IsString()

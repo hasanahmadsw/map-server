@@ -5,4 +5,6 @@ export const PrimaryColumnMap: Record<TranslationEventTypes, string> = {
   [TranslationEventTypes.setting]: 'settingId',
   [TranslationEventTypes.staff]: 'staffId',
   [TranslationEventTypes.service]: 'serviceId',
+  [TranslationEventTypes.solution]: 'solutionId',
+  [TranslationEventTypes.project]: 'projectId',
 };

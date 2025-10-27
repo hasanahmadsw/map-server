@@ -3,4 +3,6 @@ export enum TranslationEventTypes {
   setting = 'setting',
   staff = 'staff',
   service = 'service',
+  solution = 'solution',
+  project = 'project',
 }

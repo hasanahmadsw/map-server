@@ -1,7 +1,7 @@
 import { IsOptional, IsString, IsBoolean, IsNumber, Min, IsInt } from 'class-validator';
 import { PaginationDto } from 'src/common/pagination/dto/pagination.dto';
 
-export class ServiceFilterDto extends PaginationDto {
+export class SolutionFilterDto extends PaginationDto {
   @IsOptional()
   @IsString()
   search?: string;
@@ -26,10 +26,6 @@ export class ServiceFilterDto extends PaginationDto {
   @IsInt()
   @Min(0)
   order?: number;
-
-  @IsOptional()
-  @IsInt()
-  solutionId?: number;
 
   @IsOptional()
   @IsString()

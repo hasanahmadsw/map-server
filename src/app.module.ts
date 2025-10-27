@@ -15,6 +15,8 @@ import { TranslationModule } from './services/translation/translation.module';
 import { UploadModule } from './shared/modules/upload/upload.module';
 import { SupabaseModule } from './services/supabase/supabase.module';
 import { ServicesModule } from './modules/services/services.module';
+import { SolutionsModule } from './modules/solutions/solutions.module';
+import { ProjectsModule } from './modules/projects/projects.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { ServicesModule } from './modules/services/services.module';
     ArticlesModule,
     TranslationModule,
     ServicesModule,
+    SolutionsModule,
+    ProjectsModule,
   ],
 
   controllers: [AppController],

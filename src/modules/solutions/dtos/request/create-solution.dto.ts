@@ -1,20 +1,7 @@
-import {
-  IsString,
-  IsNotEmpty,
-  Length,
-  IsOptional,
-  IsBoolean,
-  IsNumber,
-  Min,
-  IsArray,
-  ValidateNested,
-  IsInt,
-} from 'class-validator';
+import { IsString, IsNotEmpty, Length, IsOptional, IsBoolean, IsNumber, Min, IsArray, IsInt } from 'class-validator';
 import { IsLanguageCode, IsLanguageCodeArray } from 'src/common';
-import { Type } from 'class-transformer';
-import { CreateSubServiceDto } from './create-sub-service.dto';
 
-export class CreateServiceDto {
+export class CreateSolutionDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 100)
@@ -44,12 +31,6 @@ export class CreateServiceDto {
     keywords?: string[];
   };
 
-  @IsArray()
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateSubServiceDto)
-  subServices?: CreateSubServiceDto[];
-
   @IsBoolean()
   @IsOptional()
   isPublished?: boolean;
@@ -66,11 +47,6 @@ export class CreateServiceDto {
   @IsOptional()
   @Min(0)
   order?: number;
-
-  @IsArray()
-  @IsInt({ each: true })
-  @IsOptional()
-  solutionIds?: number[];
 
   // required: must be provided and must be a 2-letter language code
   @IsLanguageCode()

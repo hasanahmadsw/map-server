@@ -7,14 +7,14 @@ import {
   IsNumber,
   Min,
   IsArray,
-  ValidateNested,
   IsInt,
+  IsDateString,
+  IsUrl,
 } from 'class-validator';
 import { IsLanguageCode, IsLanguageCodeArray } from 'src/common';
 import { Type } from 'class-transformer';
-import { CreateSubServiceDto } from './create-sub-service.dto';
 
-export class CreateServiceDto {
+export class CreateProjectDto {
   @IsString()
   @IsNotEmpty()
   @Length(2, 100)
@@ -46,9 +46,17 @@ export class CreateServiceDto {
 
   @IsArray()
   @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => CreateSubServiceDto)
-  subServices?: CreateSubServiceDto[];
+  challenges?: {
+    title: string;
+    description: string;
+  }[];
+
+  @IsArray()
+  @IsOptional()
+  results?: {
+    title: string;
+    description: string;
+  }[];
 
   @IsBoolean()
   @IsOptional()
@@ -66,6 +74,36 @@ export class CreateServiceDto {
   @IsOptional()
   @Min(0)
   order?: number;
+
+  @IsString()
+  @IsOptional()
+  clientName?: string;
+
+  @IsUrl()
+  @IsOptional()
+  projectUrl?: string;
+
+  @IsUrl()
+  @IsOptional()
+  githubUrl?: string;
+
+  @IsDateString()
+  @IsOptional()
+  startDate?: string;
+
+  @IsDateString()
+  @IsOptional()
+  endDate?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  technologies?: string[];
+
+  @IsArray()
+  @IsInt({ each: true })
+  @IsOptional()
+  serviceIds?: number[];
 
   @IsArray()
   @IsInt({ each: true })

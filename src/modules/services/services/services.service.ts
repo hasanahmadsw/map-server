@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, SelectQueryBuilder } from 'typeorm';
+import { Repository, DataSource, SelectQueryBuilder, In } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
 import { CreateServiceDto } from '../dtos/request/create-service.dto';
 import { UpdateServiceDto } from '../dtos/request/update-service.dto';
@@ -8,6 +8,7 @@ import { ServiceResponseDto } from '../dtos/response/service-response.dto';
 import { ServiceFilterDto } from '../dtos/query/service-filter.dto';
 import { ServiceEntity } from '../entities/service.entity';
 import { ServiceTranslationEntity } from '../entities/service-translation.entity';
+import { SolutionEntity } from '../../solutions/entities/solution.entity';
 import { paginate } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { PublicServiceFilterDto } from '../dtos/query/public-service-filter.dto';
@@ -21,6 +22,8 @@ export class ServicesService {
   constructor(
     @InjectRepository(ServiceEntity)
     private readonly serviceRepository: Repository<ServiceEntity>,
+    @InjectRepository(SolutionEntity)
+    private readonly solutionRepository: Repository<SolutionEntity>,
     private readonly translateService: TranslateService,
     private readonly languagesService: LanguagesService,
     private readonly uploadService: UploadService,
@@ -33,7 +36,8 @@ export class ServicesService {
   }
 
   async create(createServiceDto: CreateServiceDto): Promise<ServiceResponseDto> {
-    const { languageCode, name, description, shortDescription, meta, subServices, ...serviceData } = createServiceDto;
+    const { languageCode, name, description, shortDescription, meta, subServices, solutionIds, ...serviceData } =
+      createServiceDto;
 
     // slug must be unique
     const exists = await this.serviceRepository.exist({ where: { slug: serviceData.slug } });
@@ -73,6 +77,13 @@ export class ServicesService {
         isDefault: true,
       });
       await trx.getRepository(ServiceTranslationEntity).save(translation);
+
+      // Associate solutions if provided
+      if (solutionIds && solutionIds.length > 0) {
+        const solutions = await trx.getRepository(SolutionEntity).findBy({ id: In(solutionIds) });
+        savedService.solutions = solutions;
+        await trx.getRepository(ServiceEntity).save(savedService);
+      }
 
       return savedService.id;
     });
@@ -127,6 +138,11 @@ export class ServicesService {
       qb.andWhere('service.order = :order', { order: filterServiceDto.order });
     }
 
+    // Filter by solution
+    if (filterServiceDto.solutionId !== undefined) {
+      qb.andWhere('solutions.id = :solutionId', { solutionId: filterServiceDto.solutionId });
+    }
+
     // Sorting
     if (filterServiceDto.sortBy) {
       const sortOrder = filterServiceDto.sortOrder || 'ASC';
@@ -168,7 +184,7 @@ export class ServicesService {
   }
 
   async update(id: number, updateServiceDto: UpdateServiceDto): Promise<ServiceResponseDto> {
-    const service = await this.serviceRepository.findOne({ where: { id }, relations: ['translations'] });
+    const service = await this.serviceRepository.findOne({ where: { id }, relations: ['translations', 'solutions'] });
 
     if (!service) {
       throw new NotFoundException('Service not found');
@@ -186,8 +202,15 @@ export class ServicesService {
       previousImage = service.featuredImage;
     }
 
+    // Handle solution associations
+    if (updateServiceDto.solutionIds !== undefined) {
+      const solutions = await this.solutionRepository.findBy({ id: In(updateServiceDto.solutionIds) });
+      service.solutions = solutions;
+    }
+
     // Update basic service data
-    Object.assign(service, updateServiceDto);
+    const { solutionIds, ...serviceData } = updateServiceDto;
+    Object.assign(service, serviceData);
 
     const savedService = await this.serviceRepository.save(service);
 
@@ -346,6 +369,8 @@ export class ServicesService {
     } else {
       qb.leftJoinAndSelect('service.translations', 'translations');
     }
+
+    qb.leftJoinAndSelect('service.solutions', 'solutions');
 
     qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
 
