@@ -17,6 +17,7 @@ import { SupabaseModule } from './services/supabase/supabase.module';
 import { ServicesModule } from './modules/services/services.module';
 import { SolutionsModule } from './modules/solutions/solutions.module';
 import { ProjectsModule } from './modules/projects/projects.module';
+import { MediaModule } from './modules/media/media.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
     ServicesModule,
     SolutionsModule,
     ProjectsModule,
+    MediaModule,
   ],
 
   controllers: [AppController],

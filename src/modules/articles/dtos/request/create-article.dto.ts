@@ -49,10 +49,6 @@ export class CreateArticleDto {
   @IsOptional()
   isFeatured?: boolean;
 
-  @IsString()
-  @IsOptional()
-  featuredImage?: string;
-
   @IsArray()
   @IsOptional()
   @IsString({ each: true })

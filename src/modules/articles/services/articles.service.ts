@@ -61,7 +61,6 @@ export class ArticlesService {
         slug: articleData.slug,
         isPublished: articleData.isPublished ?? false,
         isFeatured: articleData.isFeatured ?? false,
-        featuredImage: articleData.featuredImage,
         viewCount: 0,
         authorId: author.id,
         image: articleData.image,

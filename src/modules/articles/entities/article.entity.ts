@@ -39,9 +39,6 @@ export class ArticleEntity {
   @Column({ default: false })
   isFeatured: boolean;
 
-  @Column({ nullable: true })
-  featuredImage: string;
-
   @Column({ default: 0 })
   viewCount: number;
 
