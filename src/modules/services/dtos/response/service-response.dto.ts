@@ -1,6 +1,7 @@
 import { Exclude, Expose, Type } from 'class-transformer';
 import { ServiceTranslationResponseDto } from './service-translation-response.dto';
 import { SubServiceResponseDto } from './sub-service-response.dto';
+import { SolutionResponseDto } from 'src/modules/solutions/dtos/response/solution-response.dto';
 
 @Exclude()
 export class ServiceResponseDto {
@@ -52,6 +53,10 @@ export class ServiceResponseDto {
   @Expose()
   @Type(() => ServiceTranslationResponseDto)
   translations?: ServiceTranslationResponseDto[];
+
+  @Expose()
+  @Type(() => SolutionResponseDto)
+  solutions?: SolutionResponseDto[];
 
   @Expose()
   createdAt: Date;

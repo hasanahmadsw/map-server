@@ -157,7 +157,7 @@ export class ServicesService {
   async getById(id: number): Promise<ServiceResponseDto> {
     const service = await this.serviceRepository.findOne({
       where: { id },
-      relations: ['translations'],
+      relations: ['translations', 'solutions', 'solutions.translations'],
     });
 
     if (!service) {
@@ -370,7 +370,8 @@ export class ServicesService {
       qb.leftJoinAndSelect('service.translations', 'translations');
     }
 
-    qb.leftJoinAndSelect('service.solutions', 'solutions');
+    qb.leftJoinAndSelect('service.solutions', 'solutions')
+      .leftJoinAndSelect('solutions.translations', 'solutionTranslations');
 
     qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
 

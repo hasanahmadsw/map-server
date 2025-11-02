@@ -141,7 +141,7 @@ export class SolutionsService {
   async getById(id: number): Promise<SolutionResponseDto> {
     const solution = await this.solutionRepository.findOne({
       where: { id },
-      relations: ['translations', 'services'],
+      relations: ['translations', 'services', 'services.translations'],
     });
 
     if (!solution) {
@@ -154,7 +154,7 @@ export class SolutionsService {
   async findBySlug(slug: string): Promise<SolutionResponseDto> {
     const solution = await this.solutionRepository.findOne({
       where: { slug },
-      relations: ['services'],
+      relations: ['services', 'services.translations'],
     });
 
     if (!solution) {
@@ -169,7 +169,10 @@ export class SolutionsService {
   }
 
   async update(id: number, updateSolutionDto: UpdateSolutionDto): Promise<SolutionResponseDto> {
-    const solution = await this.solutionRepository.findOne({ where: { id }, relations: ['translations', 'services'] });
+    const solution = await this.solutionRepository.findOne({
+      where: { id },
+      relations: ['translations', 'services', 'services.translations'],
+    });
 
     if (!solution) {
       throw new NotFoundException('Solution not found');
@@ -349,6 +352,19 @@ export class SolutionsService {
     }
 
     qb.leftJoinAndSelect('solution.services', 'services');
+
+    if (languageCode) {
+      qb.innerJoinAndSelect(
+        'services.translations',
+        'serviceTranslations',
+        'serviceTranslations.languageCode = :languageCode',
+        {
+          languageCode,
+        },
+      );
+    } else {
+      qb.leftJoinAndSelect('services.translations', 'serviceTranslations');
+    }
 
     qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
 
