@@ -33,13 +33,13 @@ export class ArticleEntity {
   @Column({ unique: true })
   slug: string;
 
-  @Column({ default: false })
+  @Column({ default: false, name: 'is_published' })
   isPublished: boolean;
 
-  @Column({ default: false })
+  @Column({ default: false, name: 'is_featured' })
   isFeatured: boolean;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, name: 'view_count' })
   viewCount: number;
 
   @Column({ type: 'text', array: true, default: '{}' })
@@ -51,9 +51,9 @@ export class ArticleEntity {
   @OneToMany(() => ArticleTranslationEntity, (translation) => translation.article)
   translations: ArticleTranslationEntity[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone', name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone', name: 'updated_at' })
   updatedAt: Date;
 }

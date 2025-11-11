@@ -19,23 +19,23 @@ export class ProjectTranslationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'project_id' })
   projectId: number;
 
   @ManyToOne(() => ProjectEntity, (project) => project.translations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'projectId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'project_id', referencedColumnName: 'id' })
   project: ProjectEntity;
 
   @ManyToOne(() => LanguageEntity, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'languageCode', referencedColumnName: 'code' })
+  @JoinColumn({ name: 'language_code', referencedColumnName: 'code' })
   language: LanguageEntity;
 
   @Index()
-  @Column({ name: 'languageCode', length: 2 })
+  @Column({ name: 'language_code', length: 2 })
   languageCode: string;
 
   @Column({ nullable: true })
@@ -44,7 +44,7 @@ export class ProjectTranslationEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ name: 'short_description', type: 'text', nullable: true })
   shortDescription: string;
 
   @Column({ type: 'boolean', name: 'is_default', default: false })
@@ -69,9 +69,9 @@ export class ProjectTranslationEntity {
     description: string;
   }[];
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;
 }

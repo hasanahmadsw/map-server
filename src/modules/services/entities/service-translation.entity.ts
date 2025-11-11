@@ -20,23 +20,23 @@ export class ServiceTranslationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'service_id' })
   serviceId: number;
 
   @ManyToOne(() => ServiceEntity, (service) => service.translations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'serviceId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'service_id', referencedColumnName: 'id' })
   service: ServiceEntity;
 
   @ManyToOne(() => LanguageEntity, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'languageCode', referencedColumnName: 'code' })
+  @JoinColumn({ name: 'language_code', referencedColumnName: 'code' })
   language: LanguageEntity;
 
   @Index()
-  @Column({ name: 'languageCode', length: 2 })
+  @Column({ name: 'language_code', length: 2 })
   languageCode: string;
 
   @Column({ nullable: true })
@@ -45,7 +45,7 @@ export class ServiceTranslationEntity {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ name: 'short_description', type: 'text', nullable: true })
   shortDescription: string;
 
   @Column({ type: 'boolean', name: 'is_default', default: false })
@@ -58,12 +58,12 @@ export class ServiceTranslationEntity {
     keywords?: string[];
   };
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({ name: 'sub_services', type: 'jsonb', nullable: true })
   subServices: SubService[];
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;
 }

@@ -6,19 +6,19 @@ export class SettingEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'site_name' })
   siteName: string;
 
-  @Column()
+  @Column({ name: 'site_description' })
   siteDescription: string;
 
-  @Column()
+  @Column({ name: 'site_logo' })
   siteLogo: string;
 
-  @Column()
+  @Column({ name: 'site_dark_logo' })
   siteDarkLogo: string;
 
-  @Column()
+  @Column({ name: 'site_favicon' })
   siteFavicon: string;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -36,12 +36,12 @@ export class SettingEntity {
   @Column({ type: 'jsonb', nullable: true })
   customScripts: CustomScripts;
 
-  @Column({ default: 'en' })
+  @Column({ name: 'default_language', default: 'en' })
   defaultLanguage: string;
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;
 }

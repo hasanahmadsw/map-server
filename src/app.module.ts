@@ -18,6 +18,7 @@ import { ServicesModule } from './modules/services/services.module';
 import { SolutionsModule } from './modules/solutions/solutions.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { MediaModule } from './modules/media/media.module';
+import { PaginationModule } from './common/pagination/pagination.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MediaModule } from './modules/media/media.module';
     SolutionsModule,
     ProjectsModule,
     MediaModule,
+    PaginationModule,
   ],
 
   controllers: [AppController],

@@ -35,10 +35,10 @@ export class StaffEntity {
   })
   role: StaffRole;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
   @Column({ nullable: true, type: 'timestamp', name: 'password_changed_at' })

@@ -13,7 +13,7 @@ import { UpdateStaffBySuperAdminDto, UpdateStaffDto } from '../dtos/request/upda
 import { StaffResponseDto } from '../dtos/response/staff-response.dto';
 import { StaffFilterDto } from '../dtos/query/staff-filter.dto';
 import { StaffEntity } from '../entities/staff.entity';
-import { paginate } from 'src/common/pagination/paginate.service';
+import { PaginationService } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { StaffRole } from '../enums/staff-role.enums';
 import { AppJwtService } from 'src/shared/modules/jwt/jwt.service';
@@ -24,6 +24,7 @@ import { TranslationEventTypes } from 'src/services/translation/enums/translated
 import { AuthorFilterDto } from '../dtos/query/author-filter.dto';
 import { UploadService } from 'src/shared/modules/upload/services/upload.service';
 import { FullStaffResponseDto } from '../dtos/response/full-staff-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class StaffService {
@@ -34,6 +35,7 @@ export class StaffService {
     private readonly languagesService: LanguagesService,
     private readonly translateService: TranslateService,
     private readonly uploadService: UploadService,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async login(loginStaffDto: LoginStaffDto) {
@@ -149,7 +151,11 @@ export class StaffService {
       queryBuilder.andWhere('staff.email = :email', { email: filterStaffDto.email });
     }
 
-    return paginate(queryBuilder, filterStaffDto, FullStaffResponseDto);
+    return this.paginationService.paginateSafeQB(queryBuilder, filterStaffDto, {
+      primaryId: 'staff.id',
+      createdAt: 'staff.createdAt',
+      map: (e) => plainToInstance(FullStaffResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async findAuthors(filterAuthorDto: AuthorFilterDto) {
@@ -159,7 +165,11 @@ export class StaffService {
       .where('translations.languageCode = :languageCode', { languageCode: filterAuthorDto.languageCode })
       .andWhere('staff.role = :role', { role: StaffRole.AUTHOR });
 
-    return paginate(queryBuilder, filterAuthorDto, StaffResponseDto);
+    return this.paginationService.paginateSafeQB(queryBuilder, filterAuthorDto, {
+      primaryId: 'staff.id',
+      createdAt: 'staff.createdAt',
+      map: (e) => plainToInstance(StaffResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async findOneAuthor(id: number, languageCode: string) {

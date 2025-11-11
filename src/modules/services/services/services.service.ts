@@ -9,7 +9,7 @@ import { ServiceFilterDto } from '../dtos/query/service-filter.dto';
 import { ServiceEntity } from '../entities/service.entity';
 import { ServiceTranslationEntity } from '../entities/service-translation.entity';
 import { SolutionEntity } from '../../solutions/entities/solution.entity';
-import { paginate } from 'src/common/pagination/paginate.service';
+import { PaginationService } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { PublicServiceFilterDto } from '../dtos/query/public-service-filter.dto';
 import { TranslationEventTypes } from 'src/services/translation/enums/translated-types.enum';
@@ -28,6 +28,7 @@ export class ServicesService {
     private readonly languagesService: LanguagesService,
     private readonly uploadService: UploadService,
     private readonly dataSource: DataSource,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async uploadPicture(picture: Express.Multer.File): Promise<{ url: string }> {
@@ -89,13 +90,22 @@ export class ServicesService {
     });
 
     if (translateTo.length > 0) {
-      this.translateService.translateToLanguages(translateTo, TranslationEventTypes.service, id, {
-        name,
-        description,
-        shortDescription,
-        meta,
-        subServices,
-      });
+      // Translate asynchronously, but don't let translation errors crash the service creation
+      this.translateService
+        .translateToLanguages(translateTo, TranslationEventTypes.service, id, {
+          name,
+          description,
+          shortDescription,
+          meta,
+          subServices,
+        })
+        .catch((error) => {
+          // Log translation errors but don't throw - service creation should succeed even if translation fails
+          console.error(
+            `Failed to translate service ${id} to languages [${translateTo.join(', ')}]:`,
+            error.message || error,
+          );
+        });
     }
 
     return this.getById(id);
@@ -104,46 +114,28 @@ export class ServicesService {
   async findAll(filterServiceDto: ServiceFilterDto): Promise<PaginationResponseDto<ServiceResponseDto>> {
     const qb = this.buildBaseQB();
 
-    // Search by slug or translation content
     if (filterServiceDto.search) {
       qb.andWhere('translations.name ILIKE :search', { search: `%${filterServiceDto.search}%` });
     }
-
-    // Filter by slug
     if (filterServiceDto.slug) {
       qb.andWhere('service.slug = :slug', { slug: filterServiceDto.slug });
     }
-
-    // Filter by published status
     if (filterServiceDto.isPublished !== undefined) {
-      qb.andWhere('service.isPublished = :isPublished', {
-        isPublished: filterServiceDto.isPublished,
-      });
+      qb.andWhere('service.isPublished = :isPublished', { isPublished: filterServiceDto.isPublished });
     }
-
-    // Filter by featured status
     if (filterServiceDto.isFeatured !== undefined) {
-      qb.andWhere('service.isFeatured = :isFeatured', {
-        isFeatured: filterServiceDto.isFeatured,
-      });
+      qb.andWhere('service.isFeatured = :isFeatured', { isFeatured: filterServiceDto.isFeatured });
     }
-
-    // Filter by language
     if (filterServiceDto.languageCode) {
       qb.andWhere('translations.languageCode = :languageCode', { languageCode: filterServiceDto.languageCode });
     }
-
-    // Filter by order
     if (filterServiceDto.order !== undefined) {
       qb.andWhere('service.order = :order', { order: filterServiceDto.order });
     }
-
-    // Filter by solution
     if (filterServiceDto.solutionId !== undefined) {
       qb.andWhere('solutions.id = :solutionId', { solutionId: filterServiceDto.solutionId });
     }
 
-    // Sorting
     if (filterServiceDto.sortBy) {
       const sortOrder = filterServiceDto.sortOrder || 'ASC';
       qb.orderBy(`service.${filterServiceDto.sortBy}`, sortOrder);
@@ -151,7 +143,12 @@ export class ServicesService {
       qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
     }
 
-    return paginate(qb, filterServiceDto, ServiceResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filterServiceDto, {
+      primaryId: 'service.id',
+      createdAt: 'service.createdAt',
+      map: (e) => plainToInstance(ServiceResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filterServiceDto.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getById(id: number): Promise<ServiceResponseDto> {
@@ -229,6 +226,13 @@ export class ServicesService {
       throw new NotFoundException('Service not found');
     }
 
+    // Remove ManyToMany relationships before deletion
+    // Delete from solution_services junction table
+    await this.dataSource.query('DELETE FROM solution_services WHERE service_id = $1', [id]);
+
+    // Delete from project_services junction table
+    await this.dataSource.query('DELETE FROM project_services WHERE service_id = $1', [id]);
+
     if (service.featuredImage) {
       await this.uploadService.deleteFiles([service.featuredImage]);
     }
@@ -281,32 +285,29 @@ export class ServicesService {
 
     const qb = this.buildBaseQB(languageCode).andWhere('service.isPublished = :isPublished', { isPublished: true });
 
-    // Apply additional filters if provided
-    if (filter) {
-      if (filter.search) {
-        qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
-      }
+    if (filter.search) {
+      qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
+    }
+    if (filter.isFeatured !== undefined) {
+      qb.andWhere('service.isFeatured = :isFeatured', { isFeatured: filter.isFeatured });
+    }
+    if (filter.order !== undefined) {
+      qb.andWhere('service.order = :order', { order: filter.order });
+    }
 
-      if (filter.isFeatured !== undefined) {
-        qb.andWhere('service.isFeatured = :isFeatured', { isFeatured: filter.isFeatured });
-      }
-
-      if (filter.order !== undefined) {
-        qb.andWhere('service.order = :order', { order: filter.order });
-      }
-
-      if (filter.sortBy) {
-        const sortOrder = filter.sortOrder || 'ASC';
-        qb.orderBy(`service.${filter.sortBy}`, sortOrder);
-      } else {
-        qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
-      }
+    if (filter.sortBy) {
+      const sortOrder = filter.sortOrder || 'ASC';
+      qb.orderBy(`service.${filter.sortBy}`, sortOrder);
     } else {
       qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
     }
 
-    // Get paginated results with raw entities
-    return paginate(qb, filter, ServiceResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'service.id',
+      createdAt: 'service.createdAt',
+      map: (e) => plainToInstance(ServiceResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getFeaturedServices(filter: PublicServiceFilterDto): Promise<PaginationResponseDto<ServiceResponseDto>> {
@@ -317,28 +318,26 @@ export class ServicesService {
       .andWhere('service.isFeatured = :isFeatured', { isFeatured: true })
       .andWhere('service.isPublished = :isPublished', { isPublished: true });
 
-    // Apply additional filters if provided
-    if (filter) {
-      if (filter.search) {
-        qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
-      }
+    if (filter.search) {
+      qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
+    }
+    if (filter.order !== undefined) {
+      qb.andWhere('service.order = :order', { order: filter.order });
+    }
 
-      if (filter.order !== undefined) {
-        qb.andWhere('service.order = :order', { order: filter.order });
-      }
-
-      if (filter.sortBy) {
-        const sortOrder = filter.sortOrder || 'ASC';
-        qb.orderBy(`service.${filter.sortBy}`, sortOrder);
-      } else {
-        qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
-      }
+    if (filter.sortBy) {
+      const sortOrder = filter.sortOrder || 'ASC';
+      qb.orderBy(`service.${filter.sortBy}`, sortOrder);
     } else {
       qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
     }
 
-    // Get paginated results with raw entities
-    return paginate(qb, filter, ServiceResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'service.id',
+      createdAt: 'service.createdAt',
+      map: (e) => plainToInstance(ServiceResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getBySlugPublic(slug: string, languageCode: string): Promise<ServiceResponseDto> {
@@ -370,8 +369,10 @@ export class ServicesService {
       qb.leftJoinAndSelect('service.translations', 'translations');
     }
 
-    qb.leftJoinAndSelect('service.solutions', 'solutions')
-      .leftJoinAndSelect('solutions.translations', 'solutionTranslations');
+    qb.leftJoinAndSelect('service.solutions', 'solutions').leftJoinAndSelect(
+      'solutions.translations',
+      'solutionTranslations',
+    );
 
     qb.orderBy('service.order', 'ASC').addOrderBy('service.createdAt', 'DESC');
 

@@ -4,6 +4,7 @@ import { ServiceFilterDto } from './service-filter.dto';
 import { IsLanguageCode } from 'src/common';
 
 export class PublicServiceFilterDto extends OmitType(ServiceFilterDto, ['languageCode']) {
+  @IsOptional()
   @IsLanguageCode({ message: 'Language code must be exactly 2 lowercase letters (e.g., "en", "fr", "es")' })
-  lang: string;
+  lang?: string;
 }

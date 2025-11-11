@@ -10,7 +10,7 @@ import { ProjectEntity } from '../entities/project.entity';
 import { ProjectTranslationEntity } from '../entities/project-translation.entity';
 import { ServiceEntity } from '../../services/entities/service.entity';
 import { SolutionEntity } from '../../solutions/entities/solution.entity';
-import { paginate } from 'src/common/pagination/paginate.service';
+import { PaginationService } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { PublicProjectFilterDto } from '../dtos/query/public-project-filter.dto';
 import { TranslationEventTypes } from 'src/services/translation/enums/translated-types.enum';
@@ -31,6 +31,7 @@ export class ProjectsService {
     private readonly languagesService: LanguagesService,
     private readonly uploadService: UploadService,
     private readonly dataSource: DataSource,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async uploadPicture(picture: Express.Multer.File): Promise<{ url: string }> {
@@ -111,7 +112,7 @@ export class ProjectsService {
 
         // Insert service-project relationships directly
         for (const service of services) {
-          await trx.query('INSERT INTO project_services ("projectId", "serviceId") VALUES ($1, $2)', [
+          await trx.query('INSERT INTO project_services (project_id, service_id) VALUES ($1, $2)', [
             savedProject.id,
             service.id,
           ]);
@@ -129,7 +130,7 @@ export class ProjectsService {
 
         // Insert solution-project relationships directly
         for (const solution of solutions) {
-          await trx.query('INSERT INTO solution_projects ("projectId", "solutionId") VALUES ($1, $2)', [
+          await trx.query('INSERT INTO solution_projects (project_id, solution_id) VALUES ($1, $2)', [
             savedProject.id,
             solution.id,
           ]);
@@ -226,7 +227,12 @@ export class ProjectsService {
       qb.orderBy('project.order', 'ASC').addOrderBy('project.createdAt', 'DESC');
     }
 
-    return paginate(qb, filterProjectDto, ProjectResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filterProjectDto, {
+      primaryId: 'project.id',
+      createdAt: 'project.createdAt',
+      map: (e) => plainToInstance(ProjectResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filterProjectDto.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getById(id: number): Promise<ProjectResponseDto> {
@@ -284,7 +290,7 @@ export class ProjectsService {
     // Handle service associations
     if (updateProjectDto.serviceIds !== undefined) {
       // Remove existing service associations
-      await this.dataSource.query('DELETE FROM project_services WHERE "projectId" = $1', [project.id]);
+      await this.dataSource.query('DELETE FROM project_services WHERE project_id = $1', [project.id]);
 
       if (updateProjectDto.serviceIds.length > 0) {
         const services = await this.serviceRepository.findBy({ id: In(updateProjectDto.serviceIds) });
@@ -296,7 +302,7 @@ export class ProjectsService {
 
         // Insert new service-project relationships
         for (const service of services) {
-          await this.dataSource.query('INSERT INTO project_services ("projectId", "serviceId") VALUES ($1, $2)', [
+          await this.dataSource.query('INSERT INTO project_services (project_id, service_id) VALUES ($1, $2)', [
             project.id,
             service.id,
           ]);
@@ -307,7 +313,7 @@ export class ProjectsService {
     // Handle solution associations
     if (updateProjectDto.solutionIds !== undefined) {
       // Remove existing solution associations
-      await this.dataSource.query('DELETE FROM solution_projects WHERE "projectId" = $1', [project.id]);
+      await this.dataSource.query('DELETE FROM solution_projects WHERE project_id = $1', [project.id]);
 
       if (updateProjectDto.solutionIds.length > 0) {
         const solutions = await this.solutionRepository.findBy({ id: In(updateProjectDto.solutionIds) });
@@ -319,7 +325,7 @@ export class ProjectsService {
 
         // Insert new solution-project relationships
         for (const solution of solutions) {
-          await this.dataSource.query('INSERT INTO solution_projects ("projectId", "solutionId") VALUES ($1, $2)', [
+          await this.dataSource.query('INSERT INTO solution_projects (project_id, solution_id) VALUES ($1, $2)', [
             project.id,
             solution.id,
           ]);
@@ -448,7 +454,12 @@ export class ProjectsService {
     }
 
     // Get paginated results with raw entities
-    return paginate(qb, filter, ProjectResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'project.id',
+      createdAt: 'project.createdAt',
+      map: (e) => plainToInstance(ProjectResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getFeaturedProjects(filter: PublicProjectFilterDto): Promise<PaginationResponseDto<ProjectResponseDto>> {
@@ -495,7 +506,12 @@ export class ProjectsService {
     }
 
     // Get paginated results with raw entities
-    return paginate(qb, filter, ProjectResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'project.id',
+      createdAt: 'project.createdAt',
+      map: (e) => plainToInstance(ProjectResponseDto, e, { excludeExtraneousValues: true }),
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+    });
   }
 
   async getBySlugPublic(slug: string, languageCode: string): Promise<ProjectResponseDto> {

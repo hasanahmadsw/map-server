@@ -1,0 +1,291 @@
+[
+  {
+    "slug": "live-event-broadcasting",
+    "icon": "broadcast-live",
+    "name": "Live Event Broadcasting",
+    "description": "At MAP Media Art Production, we deliver seamless live event broadcasting across the UAE, Saudi Arabia, and the Middle East. With state-of-the-art technology and an expert crew, we stream your events in real time to audiences locally, regionally, and globally.",
+    "shortDescription": "Professional live event broadcasting across UAE, Saudi Arabia & MENA.",
+    "meta": {
+      "title": "Live Event Broadcasting Services in UAE & Saudi Arabia | MAP Media Art Production",
+      "description": "Stream conferences, product launches, sports, festivals, ceremonies, religious and public events with professional live broadcasting. Hybrid-ready workflows for UAE, Saudi Arabia & MENA.",
+      "keywords": [
+        "live event broadcasting UAE",
+        "live streaming Saudi Arabia",
+        "hybrid event broadcast",
+        "festival broadcasting Middle East",
+        "sports broadcast UAE",
+        "product launch live stream",
+        "religious event broadcast",
+        "ceremony live broadcast"
+      ]
+    },
+    "subServices": [
+      {
+        "name": "Event Broadcasting",
+        "description": "Stream conferences, seminars and corporate events live to employees, stakeholders and wider audiences."
+      },
+      {
+        "name": "Product Launch Broadcasting",
+        "description": "Showcase launches with dynamic, real-time broadcasts that highlight innovation and drive buzz."
+      },
+      {
+        "name": "Sports Event Broadcasting",
+        "description": "Capture the energy of sports with HD multi-camera coverage, replays and professional commentary setups."
+      },
+      {
+        "name": "Festival Broadcasting",
+        "description": "Share live performances and cultural festivals with audiences around the world."
+      },
+      {
+        "name": "Hybrid Event Broadcasting",
+        "description": "Blend in-person and online audiences with seamless hybrid streaming workflows."
+      },
+      {
+        "name": "Religious Event Broadcasting",
+        "description": "Enable remote participation in religious gatherings and celebrations via professional live streams."
+      },
+      {
+        "name": "Ceremony Broadcasting",
+        "description": "Broadcast award ceremonies and milestones to reach and engage wider audiences."
+      },
+      {
+        "name": "Public Event Broadcasting",
+        "description": "Cover political gatherings, public events and speeches with accuracy and reliability."
+      }
+    ],
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 11,
+    "solutionIds": [2],
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "tv-broadcasting-services",
+    "icon": "television",
+    "name": "TV Broadcasting Services",
+    "description": "At MAP Media Art Production, we provide high-quality TV broadcasting services across the UAE, Saudi Arabia and the Middle East. From production through distribution, our expert team and advanced technology ensure your television content reaches its audience with maximum impact.",
+    "shortDescription": "Complete TV broadcasting solutions for UAE, Saudi Arabia & the Middle East.",
+    "meta": {
+      "title": "TV Broadcasting Services in UAE & Saudi Arabia | MAP Media Art Production",
+      "description": "Professional TV broadcasting production, distribution and satellite services for UAE, Saudi Arabia and Middle East by MAP Media Art Production.",
+      "keywords": [
+        "TV broadcasting UAE",
+        "television production Saudi Arabia",
+        "TV distribution Middle East",
+        "broadcast TV services Dubai",
+        "program broadcasting UAE",
+        "satellite TV UAE",
+        "MAP Media Art Production TV"
+      ]
+    },
+    "subServices": [
+      {
+        "name": "TV Program Production",
+        "description": "Create and produce television programs including talk shows, series, documentaries and more for regional audiences."
+      },
+      {
+        "name": "TV Channel Distribution",
+        "description": "Manage distribution of TV channels and programs across satellite, cable and OTT platforms in the region."
+      },
+      {
+        "name": "Studio & Set Production",
+        "description": "Provide full studio production services including set design, multi-camera setup, live switching and control room operations."
+      },
+      {
+        "name": "Satellite Uplink/Downlink",
+        "description": "Handle satellite uplink and downlink operations to broadcast content regionally and globally."
+      },
+      {
+        "name": "Live TV Broadcasts",
+        "description": "Stream live television events such as news, talk shows, ceremonies and more with professional broadcast standards."
+      },
+      {
+        "name": "Post-Production & Mastering",
+        "description": "Edit, grade and prepare TV programs for broadcast compliance, encoding and delivery."
+      },
+      {
+        "name": "Multilingual TV Content",
+        "description": "Deliver TV shows in Arabic, English and other regional languages to cater to diverse audiences."
+      },
+      {
+        "name": "Channel Branding & Graphics",
+        "description": "Design on-air graphics, branding packages and broadcast identity for TV channels."
+      }
+    ],
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 12,
+    "solutionIds": [2],
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "ob-van-services",
+    "icon": "tv-truck",
+    "name": "OB Van Services",
+    "description": "We offer state-of-the-art Outside Broadcast (OB) Van Services for live event coverage across the UAE, Saudi Arabia, and the Middle East. Our mobile broadcast units provide multi-camera setups, satellite connectivity and full broadcast-grade workflows for high-impact events.",
+    "shortDescription": "Mobile OB Van broadcasting solutions across UAE, Saudi Arabia & MENA.",
+    "meta": {
+      "title": "OB Van Services in UAE & Saudi Arabia | MAP Media Art Production",
+      "description": "Mobile broadcasting units for live events, sports, concerts, corporate productions, news and hybrid/virtual events across the Middle East.",
+      "keywords": [
+        "OB van services UAE",
+        "outside broadcast van Saudi Arabia",
+        "mobile broadcasting unit UAE",
+        "live event OB van Middle East",
+        "satellite OB van UAE",
+        "hybrid event broadcast van UAE",
+        "concert OB van MENA"
+      ]
+    },
+    "subServices": [
+      {
+        "name": "Multi-Camera Broadcasting",
+        "description": "Deliver high-definition live coverage with multi-camera setups managed by professional operators."
+      },
+      {
+        "name": "Sports Event OB Services",
+        "description": "Capture the excitement of sports events with OB vans tailored for dynamic angles, replays and commentary."
+      },
+      {
+        "name": "Concert & Festival Coverage",
+        "description": "Ensure flawless live coverage of concerts and festivals with high-quality audio and video production from mobile units."
+      },
+      {
+        "name": "Corporate Event Broadcasting",
+        "description": "Stream conferences, product launches and corporate events directly to your audience with professional OB setups."
+      },
+      {
+        "name": "News & Current Affairs OB",
+        "description": "Provide on-location broadcasting for live interviews, breaking news and real-time reports using mobile studios."
+      },
+      {
+        "name": "Virtual & Hybrid Event OB",
+        "description": "Facilitate seamless integration of in-person and online audiences with OB vans optimized for hybrid and virtual events."
+      },
+      {
+        "name": "Satellite Connectivity & Uplink",
+        "description": "Extend your event’s reach with OB vans equipped with satellite links and global broadcast capabilities."
+      },
+      {
+        "name": "Mobile Studio Solutions",
+        "description": "Transform any location into a professional studio with mobile OB setups including advanced audio, video and lighting."
+      }
+    ],
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 13,
+    "solutionIds": [2],
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "satellite-broadcasting-services",
+    "icon": "satellite-dish",
+    "name": "Satellite Broadcasting Services",
+    "description": "At MAP Media Art Production, we deliver cutting-edge satellite broadcasting services that provide reliable regional and global reach. Serving the UAE, Saudi Arabia, and the Middle East, our team supports live events, TV distribution, corporate communications, uplink/downlink operations, and remote-location broadcasts.",
+    "shortDescription": "Professional satellite broadcasting across UAE, Saudi Arabia & the Middle East.",
+    "meta": {
+      "title": "Satellite Broadcasting Services in UAE & Saudi Arabia | MAP Media Art Production",
+      "description": "Live satellite broadcasting, TV program distribution, corporate communications, uplink & downlink, and remote-location broadcasting across the Middle East.",
+      "keywords": [
+        "satellite broadcasting UAE",
+        "uplink downlink services",
+        "TV program distribution Middle East",
+        "satellite live broadcast Saudi Arabia",
+        "remote location broadcasting",
+        "corporate communication broadcast",
+        "MAP Media Art Production satellite"
+      ]
+    },
+    "subServices": [
+      {
+        "name": "Live Satellite Broadcasting",
+        "description": "Broadcast sports, concerts, conferences, and other events in real time to regional and global audiences."
+      },
+      {
+        "name": "TV Program Distribution",
+        "description": "Deliver television content to regional and international broadcasters with professional satellite workflows."
+      },
+      {
+        "name": "Communication Broadcasting",
+        "description": "Enable secure, reliable transmission of corporate messages, town halls and announcements to distributed teams."
+      },
+      {
+        "name": "Uplink & Downlink Services",
+        "description": "Ensure a stable, compliant transmission path with certified satellite uplink and downlink operations."
+      },
+      {
+        "name": "Remote Location Broadcasting",
+        "description": "Go live from remote or hard-to-access locations using mobile satellite solutions."
+      }
+    ],
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 14,
+    "solutionIds": [2],
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "sports-broadcasting-services",
+    "icon": "sports-broadcast",
+    "name": "Sports Broadcasting Services",
+    "description": "At MAP Media Art Production, we specialize in delivering top-quality sports broadcasting services for events across the UAE, Saudi Arabia, and MENA. Our comprehensive services ensure your sporting event is broadcast seamlessly to local, regional, and global audiences. :contentReference[oaicite:1]{index=1}",
+    "shortDescription": "Capture the excitement of sports events with professional broadcasting services across UAE, Saudi Arabia & the Middle East.",
+    "meta": {
+      "title": "Sports Broadcasting Services in UAE, Saudi Arabia & Middle East | MAP Media Art Production",
+      "description": "Professional sports broadcasting services across the UAE, Saudi Arabia and the Middle East — from live events and dynamic replays to commentary, multilingual coverage and aerial shots. :contentReference[oaicite:2]{index=2}",
+      "keywords": [
+        "sports broadcasting UAE",
+        "live sports event coverage Saudi Arabia",
+        "sports streaming Middle East",
+        "multilingual sports broadcast UAE",
+        "aerial sports broadcast MENA",
+        "sports highlight video production UAE"
+      ]
+    },
+    "subServices": [
+      {
+        "name": "Live Sports Event Coverage",
+        "description": "Deliver real-time coverage of sports events with high-definition visuals and professional-grade audio. :contentReference[oaicite:3]{index=3}"
+      },
+      {
+        "name": "Dynamic Replay Solutions",
+        "description": "Enhance audience engagement with slow-motion and real-time replays of key moments, capturing every detail. :contentReference[oaicite:4]{index=4}"
+      },
+      {
+        "name": "Commentary & Multilingual Coverage",
+        "description": "Provide audiences with insightful commentary and analysis from professional broadcasters, and deliver coverage in multiple languages including Arabic and English. :contentReference[oaicite:5]{index=5}"
+      },
+      {
+        "name": "Stadium Display Broadcasts",
+        "description": "Stream live feeds, highlights and replays to stadium screens to keep fan engagement high throughout the event. :contentReference[oaicite:6]{index=6}"
+      },
+      {
+        "name": "Streaming for Online Platforms",
+        "description": "Stream sports events to platforms like YouTube, Facebook, and custom websites, reaching digital audiences effectively. :contentReference[oaicite:7]{index=7}"
+      },
+      {
+        "name": "Sports Highlight Video Production",
+        "description": "Create engaging highlight reels to showcase the most exciting moments of your sports events. :contentReference[oaicite:8]{index=8}"
+      },
+      {
+        "name": "Aerial & Drone Broadcasting",
+        "description": "Use drone technology for stunning aerial shots and unique angles that elevate the viewing experience. :contentReference[oaicite:9]{index=9}"
+      }
+    ],
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 15,
+    "solutionIds": [2],
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  }
+]

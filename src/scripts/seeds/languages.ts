@@ -38,18 +38,6 @@ async function bootstrap() {
         nativeName: 'العربية',
         isDefault: false,
       },
-      {
-        name: 'French',
-        code: 'fr',
-        nativeName: 'Français',
-        isDefault: false,
-      },
-      {
-        name: 'Spanish',
-        code: 'es',
-        nativeName: 'Español',
-        isDefault: false,
-      },
     ];
 
     const savedLanguage = await languageRepository.save(language);

@@ -25,16 +25,16 @@ export class ServiceEntity {
   @Column({ nullable: true })
   icon: string;
 
-  @Column({ default: false })
+  @Column({ name: 'is_published', default: false })
   isPublished: boolean;
 
-  @Column({ default: false })
+  @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
-  @Column({ nullable: true })
+  @Column({ name: 'featured_image', nullable: true })
   featuredImage: string;
 
-  @Column({ default: 0 })
+  @Column({ name: 'view_count', default: 0 })
   viewCount: number;
 
   @Column({ type: 'int', default: 0 })
@@ -46,22 +46,22 @@ export class ServiceEntity {
   @ManyToMany(() => SolutionEntity, (solution) => solution.services)
   @JoinTable({
     name: 'solution_services',
-    joinColumn: { name: 'serviceId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'solutionId', referencedColumnName: 'id' },
+    joinColumn: { name: 'service_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'solution_id', referencedColumnName: 'id' },
   })
   solutions: SolutionEntity[];
 
   @ManyToMany(() => ProjectEntity, (project) => project.services)
   @JoinTable({
     name: 'project_services',
-    joinColumn: { name: 'serviceId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'projectId', referencedColumnName: 'id' },
+    joinColumn: { name: 'service_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'project_id', referencedColumnName: 'id' },
   })
   projects: ProjectEntity[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

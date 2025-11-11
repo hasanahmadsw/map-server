@@ -9,7 +9,7 @@ import { SolutionFilterDto } from '../dtos/query/solution-filter.dto';
 import { SolutionEntity } from '../entities/solution.entity';
 import { SolutionTranslationEntity } from '../entities/solution-translation.entity';
 import { ServiceEntity } from '../../services/entities/service.entity';
-import { paginate } from 'src/common/pagination/paginate.service';
+import { PaginationService } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { PublicSolutionFilterDto } from '../dtos/query/public-solution-filter.dto';
 import { TranslationEventTypes } from 'src/services/translation/enums/translated-types.enum';
@@ -23,10 +23,12 @@ export class SolutionsService {
     @InjectRepository(SolutionEntity)
     private readonly solutionRepository: Repository<SolutionEntity>,
     @InjectRepository(ServiceEntity)
+    private readonly serviceRepository: Repository<ServiceEntity>,
     private readonly translateService: TranslateService,
     private readonly languagesService: LanguagesService,
     private readonly uploadService: UploadService,
     private readonly dataSource: DataSource,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async uploadPicture(picture: Express.Multer.File): Promise<{ url: string }> {
@@ -79,12 +81,21 @@ export class SolutionsService {
     });
 
     if (translateTo.length > 0) {
-      this.translateService.translateToLanguages(translateTo, TranslationEventTypes.solution, id, {
-        name,
-        description,
-        shortDescription,
-        meta,
-      });
+      // Translate asynchronously, but don't let translation errors crash the solution creation
+      this.translateService
+        .translateToLanguages(translateTo, TranslationEventTypes.solution, id, {
+          name,
+          description,
+          shortDescription,
+          meta,
+        })
+        .catch((error) => {
+          // Log translation errors but don't throw - solution creation should succeed even if translation fails
+          console.error(
+            `Failed to translate solution ${id} to languages [${translateTo.join(', ')}]:`,
+            error.message || error,
+          );
+        });
     }
 
     return this.getById(id);
@@ -93,41 +104,25 @@ export class SolutionsService {
   async findAll(filterSolutionDto: SolutionFilterDto): Promise<PaginationResponseDto<SolutionResponseDto>> {
     const qb = this.buildBaseQB();
 
-    // Search by slug or translation content
     if (filterSolutionDto.search) {
       qb.andWhere('translations.name ILIKE :search', { search: `%${filterSolutionDto.search}%` });
     }
-
-    // Filter by slug
     if (filterSolutionDto.slug) {
       qb.andWhere('solution.slug = :slug', { slug: filterSolutionDto.slug });
     }
-
-    // Filter by published status
     if (filterSolutionDto.isPublished !== undefined) {
-      qb.andWhere('solution.isPublished = :isPublished', {
-        isPublished: filterSolutionDto.isPublished,
-      });
+      qb.andWhere('solution.isPublished = :isPublished', { isPublished: filterSolutionDto.isPublished });
     }
-
-    // Filter by featured status
     if (filterSolutionDto.isFeatured !== undefined) {
-      qb.andWhere('solution.isFeatured = :isFeatured', {
-        isFeatured: filterSolutionDto.isFeatured,
-      });
+      qb.andWhere('solution.isFeatured = :isFeatured', { isFeatured: filterSolutionDto.isFeatured });
     }
-
-    // Filter by language
     if (filterSolutionDto.languageCode) {
       qb.andWhere('translations.languageCode = :languageCode', { languageCode: filterSolutionDto.languageCode });
     }
-
-    // Filter by order
     if (filterSolutionDto.order !== undefined) {
       qb.andWhere('solution.order = :order', { order: filterSolutionDto.order });
     }
 
-    // Sorting
     if (filterSolutionDto.sortBy) {
       const sortOrder = filterSolutionDto.sortOrder || 'ASC';
       qb.orderBy(`solution.${filterSolutionDto.sortBy}`, sortOrder);
@@ -135,7 +130,12 @@ export class SolutionsService {
       qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
     }
 
-    return paginate(qb, filterSolutionDto, SolutionResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filterSolutionDto, {
+      primaryId: 'solution.id',
+      createdAt: 'solution.createdAt',
+      orderDirection: (filterSolutionDto.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+      map: (e) => plainToInstance(SolutionResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async getById(id: number): Promise<SolutionResponseDto> {
@@ -260,34 +260,58 @@ export class SolutionsService {
     const languageCode = filter.lang;
     await this.languagesService.ensureLanguageExists(languageCode);
 
-    const qb = this.buildBaseQB(languageCode).andWhere('solution.isPublished = :isPublished', { isPublished: true });
+    const qb = this.solutionRepository
+      .createQueryBuilder('solution')
+      .leftJoinAndSelect('solution.translations', 'translations')
+      .leftJoinAndSelect('solution.services', 'services')
+      .leftJoinAndSelect('services.translations', 'serviceTranslations')
+      .andWhere('solution.isPublished = :isPublished', { isPublished: true });
 
-    // Apply additional filters if provided
-    if (filter) {
-      if (filter.search) {
-        qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
-      }
+    if (filter.search) {
+      qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
+    }
+    if (filter.isFeatured !== undefined) {
+      qb.andWhere('solution.isFeatured = :isFeatured', { isFeatured: filter.isFeatured });
+    }
+    if (filter.order !== undefined) {
+      qb.andWhere('solution.order = :order', { order: filter.order });
+    }
 
-      if (filter.isFeatured !== undefined) {
-        qb.andWhere('solution.isFeatured = :isFeatured', { isFeatured: filter.isFeatured });
-      }
-
-      if (filter.order !== undefined) {
-        qb.andWhere('solution.order = :order', { order: filter.order });
-      }
-
-      if (filter.sortBy) {
-        const sortOrder = filter.sortOrder || 'ASC';
-        qb.orderBy(`solution.${filter.sortBy}`, sortOrder);
-      } else {
-        qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
-      }
+    if (filter.sortBy) {
+      const sortOrder = filter.sortOrder || 'ASC';
+      qb.orderBy(`solution.${filter.sortBy}`, sortOrder);
     } else {
       qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
     }
 
-    // Get paginated results with raw entities
-    return paginate(qb, filter, SolutionResponseDto);
+    const result = await this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'solution.id',
+      createdAt: 'solution.createdAt',
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+      map: (e) => plainToInstance(SolutionResponseDto, e, { excludeExtraneousValues: true }),
+    });
+
+    // post-processing: اختر ترجمة اللغة المطلوبة ثم الافتراضية
+    result.data = result.data.map((solution: any) => {
+      if (Array.isArray(solution.translations)) {
+        const requested = solution.translations.find((t: any) => t.languageCode === languageCode);
+        const fallback = solution.translations.find((t: any) => t.isDefault);
+        solution.translations = requested ? [requested] : fallback ? [fallback] : solution.translations;
+      }
+      if (Array.isArray(solution.services)) {
+        solution.services = solution.services.map((service: any) => {
+          if (Array.isArray(service.translations)) {
+            const sReq = service.translations.find((t: any) => t.languageCode === languageCode);
+            const sDef = service.translations.find((t: any) => t.isDefault);
+            service.translations = sReq ? [sReq] : sDef ? [sDef] : service.translations;
+          }
+          return service;
+        });
+      }
+      return solution;
+    });
+
+    return result;
   }
 
   async getFeaturedSolutions(filter: PublicSolutionFilterDto): Promise<PaginationResponseDto<SolutionResponseDto>> {
@@ -298,40 +322,69 @@ export class SolutionsService {
       .andWhere('solution.isFeatured = :isFeatured', { isFeatured: true })
       .andWhere('solution.isPublished = :isPublished', { isPublished: true });
 
-    // Apply additional filters if provided
-    if (filter) {
-      if (filter.search) {
-        qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
-      }
+    if (filter.search) {
+      qb.andWhere('translations.name ILIKE :search', { search: `%${filter.search}%` });
+    }
+    if (filter.order !== undefined) {
+      qb.andWhere('solution.order = :order', { order: filter.order });
+    }
 
-      if (filter.order !== undefined) {
-        qb.andWhere('solution.order = :order', { order: filter.order });
-      }
-
-      if (filter.sortBy) {
-        const sortOrder = filter.sortOrder || 'ASC';
-        qb.orderBy(`solution.${filter.sortBy}`, sortOrder);
-      } else {
-        qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
-      }
+    if (filter.sortBy) {
+      const sortOrder = filter.sortOrder || 'ASC';
+      qb.orderBy(`solution.${filter.sortBy}`, sortOrder);
     } else {
       qb.orderBy('solution.order', 'ASC').addOrderBy('solution.createdAt', 'DESC');
     }
 
-    // Get paginated results with raw entities
-    return paginate(qb, filter, SolutionResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'solution.id',
+      createdAt: 'solution.createdAt',
+      orderDirection: (filter.sortOrder as 'ASC' | 'DESC') ?? 'DESC',
+      map: (e) => plainToInstance(SolutionResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async getBySlugPublic(slug: string, languageCode: string): Promise<SolutionResponseDto> {
     await this.languagesService.ensureLanguageExists(languageCode);
 
-    const solution = await this.buildBaseQB(languageCode)
+    // Use left join to include solution even if translation for requested language doesn't exist
+    const solution = await this.solutionRepository
+      .createQueryBuilder('solution')
+      .leftJoinAndSelect('solution.translations', 'translations')
+      .leftJoinAndSelect('solution.services', 'services')
+      .leftJoinAndSelect('services.translations', 'serviceTranslations')
       .andWhere('solution.slug = :slug', { slug })
       .andWhere('solution.isPublished = :isPublished', { isPublished: true })
-      .andWhere('translations.languageCode = :languageCode', { languageCode })
       .getOne();
 
     if (!solution) throw new NotFoundException('Solution not found');
+
+    // Post-process to select the correct translation (prefer requested language, fall back to default)
+    if (solution.translations && Array.isArray(solution.translations)) {
+      const requestedTranslation = solution.translations.find((t: any) => t.languageCode === languageCode);
+      const defaultTranslation = solution.translations.find((t: any) => t.isDefault);
+      solution.translations = requestedTranslation
+        ? [requestedTranslation]
+        : defaultTranslation
+          ? [defaultTranslation]
+          : solution.translations;
+
+      // Same for services
+      if (solution.services && Array.isArray(solution.services)) {
+        solution.services = solution.services.map((service: any) => {
+          if (service.translations && Array.isArray(service.translations)) {
+            const serviceRequestedTranslation = service.translations.find((t: any) => t.languageCode === languageCode);
+            const serviceDefaultTranslation = service.translations.find((t: any) => t.isDefault);
+            service.translations = serviceRequestedTranslation
+              ? [serviceRequestedTranslation]
+              : serviceDefaultTranslation
+                ? [serviceDefaultTranslation]
+                : service.translations;
+          }
+          return service;
+        });
+      }
+    }
 
     // Increment view count without saving relations
     await this.solutionRepository.update(solution.id, { viewCount: solution.viewCount + 1 });

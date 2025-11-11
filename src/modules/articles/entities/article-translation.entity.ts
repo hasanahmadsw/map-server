@@ -19,23 +19,23 @@ export class ArticleTranslationEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ name: 'article_id', nullable: false, type: 'int' })
   articleId: number;
 
   @ManyToOne(() => ArticleEntity, (article) => article.translations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'articleId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'article_id', referencedColumnName: 'id' })
   article: ArticleEntity;
 
   @ManyToOne(() => LanguageEntity, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'languageCode', referencedColumnName: 'code' })
+  @JoinColumn({ name: 'language_code', referencedColumnName: 'code' })
   language: LanguageEntity;
 
   @Index()
-  @Column({ name: 'languageCode', length: 2 })
+  @Column({ name: 'language_code', length: 2 })
   languageCode: string;
 
   @Column({ nullable: true })
@@ -57,9 +57,9 @@ export class ArticleTranslationEntity {
     keywords?: string[];
   };
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;
 }

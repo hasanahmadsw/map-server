@@ -1,0 +1,107 @@
+[
+  {
+    "slug": "media-production-dubai",
+    "icon": "clapperboard",
+    "name": "Media Production in Dubai",
+    "description": "Unleash creativity with professional media production in Dubai. MAP Media Art Production crafts visually stunning, impactful content tailored to your needs—from corporate videos and commercials to music videos and documentaries—delivered by an expert team in Dubai Studio City.",
+    "shortDescription": "Professional media production services in Dubai: corporate videos, commercials, music videos, documentaries, and more.",
+    "meta": {
+      "title": "Media Production in Dubai | Corporate Videos, Commercials & More – MAP Media Art Production",
+      "description": "Explore professional media production services in Dubai with MAP Media Art Production: corporate videos, commercials, music videos, documentaries, and event coverage.",
+      "keywords": [
+        "media production Dubai",
+        "video production Dubai",
+        "corporate videos Dubai",
+        "commercial video production",
+        "music video Dubai",
+        "documentary production UAE",
+        "MAP Media Art Production"
+      ]
+    },
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 1,
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "broadcasting-services",
+    "icon": "broadcast-tower",
+    "name": "Broadcasting Services",
+    "description": "We provide broadcasting services designed to deliver high-quality live and recorded content to audiences across the UAE, Saudi Arabia, and the Middle East. With over 25 years of expertise, state-of-the-art equipment, and a skilled team, we specialize in live broadcasting, event coverage, and content distribution tailored to the unique needs of the region.",
+    "shortDescription": "Seamless broadcasting services for your events and productions in the UAE, Saudi Arabia & MENA.",
+    "meta": {
+      "title": "Broadcasting Services in UAE & Saudi Arabia | MAP Media Art Production",
+      "description": "Professional broadcasting services across the UAE and Saudi Arabia. OB vans, live event broadcasting, TV & film broadcasting, sports, satellite and streaming solutions.",
+      "keywords": [
+        "broadcasting services UAE",
+        "live event broadcasting Saudi Arabia",
+        "OB van broadcast UAE",
+        "TV broadcasting UAE",
+        "satellite broadcasting Middle East",
+        "sports broadcasting UAE",
+        "web streaming services UAE"
+      ]
+    },
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "",
+    "order": 2,
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "event-management-uae-middle-east",
+    "icon": "calendar-event",
+    "name": "Event Management UAE & Middle East",
+    "description": "At MAP Media Art Production, we provide complete event management solutions across the UAE and Middle East. From corporate conferences and product launches to cultural festivals and entertainment shows, our experienced team handles every detail—planning, logistics, production, and execution—to ensure a flawless experience.",
+    "shortDescription": "Complete event management services across the UAE and Middle East—from planning to production.",
+    "meta": {
+      "title": "Event Management in UAE & Middle East | MAP Media Art Production",
+      "description": "Professional event management and production services in UAE & the Middle East. From conferences and exhibitions to concerts, corporate events, and cultural shows—MAP delivers excellence end-to-end.",
+      "keywords": [
+        "event management UAE",
+        "event production Dubai",
+        "Middle East event planning",
+        "corporate event UAE",
+        "conference planning Dubai",
+        "cultural event production UAE",
+        "MAP Media Art Production events"
+      ]
+    },
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "https://maproduction.ae/cdn/shop/files/event-management-uae-middle-east.jpg",
+    "order": 3,
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  },
+  {
+    "slug": "professional-photography-services-uae",
+    "icon": "camera",
+    "name": "Professional Photography Services",
+    "description": "Capture moments that last a lifetime with professional photography. At MAP Media Art Production, we provide premium photography services across the UAE, Saudi Arabia, and the Middle East — covering corporate portraits, product photography, events, lifestyle, food, architecture, and marketing campaigns.",
+    "shortDescription": "Professional photography services across the UAE, Saudi Arabia, and the Middle East.",
+    "meta": {
+      "title": "Professional Photography Services in UAE | MAP Media Art Production",
+      "description": "Professional photography services in the UAE, Saudi Arabia, and the Middle East. Corporate, event, product, food, architectural, and lifestyle photography by MAP Media Art Production.",
+      "keywords": [
+        "professional photography UAE",
+        "corporate photography Dubai",
+        "event photography UAE",
+        "product photography UAE",
+        "food photography Dubai",
+        "architectural photography UAE",
+        "lifestyle photography UAE",
+        "MAP Media Art Production photography"
+      ]
+    },
+    "isPublished": true,
+    "isFeatured": true,
+    "featuredImage": "https://maproduction.ae/cdn/shop/files/professional-photography-services-uae.jpg",
+    "order": 4,
+    "languageCode": "en",
+    "translateTo": ["ar"]
+  }
+]

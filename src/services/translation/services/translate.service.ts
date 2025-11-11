@@ -52,7 +52,6 @@ export class TranslateService {
       .where('language.code IN (:...codes)', { codes: languageCodes })
       .getMany();
 
-    let results = [];
     const translationPromises = languages.map(async (language) => {
       const event: TranslateEvent = {
         languageCode: language.code,
@@ -76,15 +75,33 @@ export class TranslateService {
           await repository.save(translation);
         });
 
-        return translated;
+        return { success: true, languageCode: language.code, translated };
+      } catch (error) {
+        // Log error but don't throw - allow other translations to continue
+        console.error(
+          `Failed to translate ${type} ${id} to ${language.name} (${language.code}):`,
+          error instanceof Error ? error.message : String(error),
+        );
+        return {
+          success: false,
+          languageCode: language.code,
+          error: error instanceof Error ? error.message : String(error),
+        };
       } finally {
         this.semaphore.release();
       }
     });
 
     // Run all translations in parallel, but concurrency is limited by the semaphore
-    results = await Promise.all(translationPromises);
+    // Use Promise.allSettled to handle individual failures gracefully
+    const results = await Promise.allSettled(translationPromises);
 
-    return results;
+    // Extract successful translations
+    const successfulTranslations = results
+      .filter((result) => result.status === 'fulfilled' && result.value.success)
+      .map((result) => (result.status === 'fulfilled' ? result.value.translated : null))
+      .filter(Boolean);
+
+    return successfulTranslations;
   }
 }

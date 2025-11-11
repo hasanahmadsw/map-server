@@ -8,10 +8,10 @@ export class LanguageCodePipe implements PipeTransform<string, string> {
     }
 
     // Check if it's exactly 2 characters and all lowercase letters
-    const langCodeRegex = /^[a-z]{2}$/;
+    const langCodeRegex = /^[a-z]{2}$/; // en, ar, etc.
 
     if (!langCodeRegex.test(value)) {
-      throw new BadRequestException('Language code must be exactly 2 lowercase letters (e.g., "en", "fr", "es")');
+      throw new BadRequestException('Language code must be exactly 2 lowercase letters (e.g., "en", "ar")');
     }
 
     return value;

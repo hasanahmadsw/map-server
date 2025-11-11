@@ -25,34 +25,34 @@ export class ProjectEntity {
   @Column({ nullable: true })
   icon: string;
 
-  @Column({ default: false })
+  @Column({ name: 'is_published', default: false })
   isPublished: boolean;
 
-  @Column({ default: false })
+  @Column({ name: 'is_featured', default: false })
   isFeatured: boolean;
 
-  @Column({ nullable: true })
+  @Column({ name: 'featured_image', nullable: true })
   featuredImage: string;
 
-  @Column({ default: 0 })
+  @Column({ name: 'view_count', default: 0 })
   viewCount: number;
 
   @Column({ type: 'int', default: 0 })
   order: number;
 
-  @Column({ nullable: true })
+  @Column({ name: 'client_name', nullable: true })
   clientName: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'project_url', nullable: true })
   projectUrl: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'github_url', nullable: true })
   githubUrl: string;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ name: 'start_date', type: 'date', nullable: true })
   startDate: Date;
 
-  @Column({ type: 'date', nullable: true })
+  @Column({ name: 'end_date', type: 'date', nullable: true })
   endDate: Date;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -64,22 +64,22 @@ export class ProjectEntity {
   @ManyToMany(() => ServiceEntity, (service) => service.projects)
   @JoinTable({
     name: 'project_services',
-    joinColumn: { name: 'projectId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'serviceId', referencedColumnName: 'id' },
+    joinColumn: { name: 'project_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'service_id', referencedColumnName: 'id' },
   })
   services: ServiceEntity[];
 
   @ManyToMany(() => SolutionEntity, (solution) => solution.projects)
   @JoinTable({
     name: 'project_solutions',
-    joinColumn: { name: 'projectId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'solutionId', referencedColumnName: 'id' },
+    joinColumn: { name: 'project_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'solution_id', referencedColumnName: 'id' },
   })
   solutions: SolutionEntity[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 }

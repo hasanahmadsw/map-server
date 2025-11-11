@@ -43,36 +43,47 @@ async function bootstrap() {
 
     // Default settings data
     const defaultSettings: Partial<SettingEntity> = {
-      siteName: 'My Website',
-      siteDescription: 'A modern and responsive website built with cutting-edge technology',
+      siteName: 'MAP Media Art Production',
+      siteDescription:
+        'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
       siteLogo: '/images/logo.png',
       siteDarkLogo: '/images/logo-dark.png',
       siteFavicon: '/images/favicon.ico',
       defaultLanguage: 'en',
       meta: {
-        title: 'My Website - Home',
-        description: 'A modern and responsive website built with cutting-edge technology',
-        keywords: ['website', 'modern', 'responsive', 'technology'],
+        title: 'MAP Media Art Production - Home',
+        description:
+          'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
+        keywords: [
+          'MAP Media Art Production',
+          'media production',
+          'media production company',
+          'media production services',
+          'media production agency',
+          'media production company in the UAE',
+          'media production company in Saudi Arabia',
+          'media production company in the Middle East',
+        ],
       } as MetaConfig,
       social: [
         {
           platform: 'facebook',
-          url: 'https://facebook.com/mywebsite',
+          url: 'https://facebook.com/mapmediaproduction',
           label: 'Facebook',
         },
         {
           platform: 'twitter',
-          url: 'https://twitter.com/mywebsite',
+          url: 'https://twitter.com/mapmediaproduction',
           label: 'Twitter',
         },
         {
           platform: 'linkedin',
-          url: 'https://linkedin.com/company/mywebsite',
+          url: 'https://linkedin.com/company/mapmediaproduction',
           label: 'LinkedIn',
         },
         {
           platform: 'instagram',
-          url: 'https://instagram.com/mywebsite',
+          url: 'https://instagram.com/mapmediaproduction',
           label: 'Instagram',
         },
       ] as SocialLink[],
@@ -82,9 +93,9 @@ async function bootstrap() {
         customScripts: [],
       } as AnalyticsConfig,
       contact: {
-        email: 'contact@mywebsite.com',
-        phone: '+1 (555) 123-4567',
-        address: '123 Main Street, City, State 12345',
+        email: 'contact@mapmediaproduction.com',
+        phone: '+971 50 123 4567',
+        address: 'Dubai, UAE',
         workingHours: 'Monday - Friday: 9:00 AM - 6:00 PM',
       } as ContactInfo,
       customScripts: {
@@ -107,12 +118,13 @@ async function bootstrap() {
         case 'en':
           translation = {
             languageCode: language.code,
-            siteName: 'My Website',
-            siteDescription: 'A modern and responsive website built with cutting-edge technology',
+            siteName: 'MAP Media Art Production',
+            siteDescription:
+              'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
             siteLogo: '/images/logo.png',
             siteDarkLogo: '/images/logo-dark.png',
             meta: {
-              title: 'My Website - Home',
+              title: 'MAP Media Art Production - Home',
               description: 'A modern and responsive website built with cutting-edge technology',
               keywords: ['website', 'modern', 'responsive', 'technology'],
             },
@@ -122,34 +134,28 @@ async function bootstrap() {
         case 'ar':
           translation = {
             languageCode: language.code,
-            siteName: 'موقعي الإلكتروني',
-            siteDescription: 'موقع ويب حديث ومتجاوب مبني بأحدث التقنيات',
+            siteName: 'MAP Media Art Production',
+            siteDescription:
+              'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
             siteLogo: '/images/logo.png',
             siteDarkLogo: '/images/logo-dark.png',
             meta: {
-              title: 'موقعي الإلكتروني - الصفحة الرئيسية',
-              description: 'موقع ويب حديث ومتجاوب مبني بأحدث التقنيات',
-              keywords: ['موقع ويب', 'حديث', 'متجاوب', 'تقنيات'],
+              title: 'MAP Media Art Production - Home',
+              description:
+                'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
+              keywords: [
+                'MAP Media Art Production',
+                'media production',
+                'media production company',
+                'media production services',
+                'media production agency',
+                'media production company in the UAE',
+                'media production company in Saudi Arabia',
+                'media production company in the Middle East',
+              ],
             },
           };
           break;
-
-        case 'fr':
-          translation = {
-            languageCode: language.code,
-            siteName: 'Mon Site Web',
-            siteDescription: 'Un site web moderne et responsive construit avec les technologies de pointe',
-            siteLogo: '/images/logo.png',
-            siteDarkLogo: '/images/logo-dark.png',
-            meta: {
-              title: 'Mon Site Web - Accueil',
-              description: 'Un site web moderne et responsive construit avec les technologies de pointe',
-              keywords: ['site web', 'moderne', 'responsive', 'technologies'],
-            },
-          };
-          break;
-
-        case 'es':
           translation = {
             languageCode: language.code,
             siteName: 'Mi Sitio Web',
@@ -168,14 +174,24 @@ async function bootstrap() {
           // For any other languages, use English as fallback
           translation = {
             languageCode: language.code,
-            siteName: 'My Website',
+            siteName: 'MAP Media Art Production',
             siteDescription: 'A modern and responsive website built with cutting-edge technology',
             siteLogo: '/images/logo.png',
             siteDarkLogo: '/images/logo-dark.png',
             meta: {
-              title: 'My Website - Home',
-              description: 'A modern and responsive website built with cutting-edge technology',
-              keywords: ['website', 'modern', 'responsive', 'technology'],
+              title: 'MAP Media Art Production - Home',
+              description:
+                'MAP Media Art Production is a leading media production company in the UAE, Saudi Arabia, and the Middle East.',
+              keywords: [
+                'MAP Media Art Production',
+                'media production',
+                'media production company',
+                'media production services',
+                'media production agency',
+                'media production company in the UAE',
+                'media production company in Saudi Arabia',
+                'media production company in the Middle East',
+              ],
             },
           };
           break;

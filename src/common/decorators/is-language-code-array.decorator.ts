@@ -13,9 +13,9 @@ export function IsLanguageCodeArray(validationOptions?: ValidationOptions) {
             return false;
           }
 
-          // Check if array is empty
+          // Allow empty arrays
           if (value.length === 0) {
-            return false;
+            return true;
           }
 
           // Check if all elements are strings
@@ -38,7 +38,7 @@ export function IsLanguageCodeArray(validationOptions?: ValidationOptions) {
           return true;
         },
         defaultMessage(args: ValidationArguments) {
-          return 'Translate to must be a non-empty array of unique 2-letter lowercase language codes (e.g., ["en", "fr", "es"])';
+          return 'Translate to must be an array of unique 2-letter lowercase language codes (e.g., ["en", "fr", "es"])';
         },
       },
     });

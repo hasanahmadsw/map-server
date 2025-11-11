@@ -14,13 +14,14 @@ import { ArticleResponseDto } from '../dtos/response/article-response.dto';
 import { ArticleFilterDto } from '../dtos/query/article-filter.dto';
 import { ArticleEntity } from '../entities/article.entity';
 import { ArticleTranslationEntity } from '../entities/article-translation.entity';
-import { paginate } from 'src/common/pagination/paginate.service';
+import { PaginationService } from 'src/common/pagination/paginate.service';
 import { PaginationResponseDto } from 'src/common/pagination/dto/pagination-response.dto';
 import { PublicArticleFilterDto } from '../dtos/query/public-article-filter.dto';
 import { TranslationEventTypes } from 'src/services/translation/enums/translated-types.enum';
 import { TranslateService } from 'src/services/translation/services/translate.service';
 import { LanguagesService } from 'src/modules/languages/services/languages.service';
 import { StaffEntity } from 'src/modules/staff/entities/staff.entity';
+import { StaffRole } from 'src/modules/staff/enums/staff-role.enums';
 import { UploadService } from 'src/shared/modules/upload/services/upload.service';
 
 @Injectable()
@@ -32,6 +33,7 @@ export class ArticlesService {
     private readonly languagesService: LanguagesService,
     private readonly uploadService: UploadService,
     private readonly dataSource: DataSource,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async uploadPicture(picture: Express.Multer.File): Promise<{ url: string }> {
@@ -146,7 +148,11 @@ export class ArticlesService {
       qb.orderBy('article.createdAt', 'DESC');
     }
 
-    return paginate(qb, filterArticleDto, ArticleResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filterArticleDto, {
+      primaryId: 'article.id',
+      createdAt: 'article.createdAt',
+      map: (e) => plainToInstance(ArticleResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async getById(id: number): Promise<ArticleResponseDto> {
@@ -325,7 +331,11 @@ export class ArticlesService {
     }
 
     // Get paginated results with raw entities
-    return paginate(qb, filter, ArticleResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'article.id',
+      createdAt: 'article.createdAt',
+      map: (e) => plainToInstance(ArticleResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async getFeaturedArticles(filter: PublicArticleFilterDto): Promise<PaginationResponseDto<ArticleResponseDto>> {
@@ -361,7 +371,11 @@ export class ArticlesService {
     }
 
     // Get paginated results with raw entities
-    return paginate(qb, filter, ArticleResponseDto);
+    return this.paginationService.paginateSafeQB(qb, filter, {
+      primaryId: 'article.id',
+      createdAt: 'article.createdAt',
+      map: (e) => plainToInstance(ArticleResponseDto, e, { excludeExtraneousValues: true }),
+    });
   }
 
   async getBySlugPublic(slug: string, languageCode: string): Promise<ArticleResponseDto> {
@@ -394,7 +408,8 @@ export class ArticlesService {
       throw new NotFoundException('Article not found');
     }
 
-    if (article.authorId !== author.id) {
+    // Allow superadmin to update any article, otherwise check ownership
+    if (article.authorId !== author.id && author.role !== StaffRole.SUPERADMIN) {
       throw new ForbiddenException('You are not the author of this article');
     }
 

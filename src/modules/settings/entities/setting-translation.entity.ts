@@ -20,17 +20,17 @@ export class SettingTranslationEntity {
   @ManyToOne(() => LanguageEntity, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'languageCode', referencedColumnName: 'code' })
+  @JoinColumn({ name: 'language_code', referencedColumnName: 'code' })
   language: LanguageEntity;
 
   @Index()
-  @Column({ name: 'languageCode', length: 2 })
+  @Column({ name: 'language_code', length: 2 })
   languageCode: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'site_name', nullable: true })
   siteName: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ name: 'site_description', type: 'text', nullable: true })
   siteDescription: string;
 
   @Column({ type: 'jsonb', nullable: true })
@@ -40,15 +40,15 @@ export class SettingTranslationEntity {
     keywords: string[];
   };
 
-  @Column({ nullable: true })
+  @Column({ name: 'site_logo', nullable: true })
   siteLogo: string;
 
-  @Column({ nullable: true })
+  @Column({ name: 'site_dark_logo', nullable: true })
   siteDarkLogo: string;
 
-  @CreateDateColumn({ type: 'timestamp with time zone' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp with time zone' })
   updatedAt: Date;
 }

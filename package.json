@@ -22,7 +22,15 @@
     "i18n:check": "ts-node src/scripts/i18n-scripts.ts",
     "seed:staff": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/staff.js",
     "seed:languages": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/languages.js",
-    "seed:settings": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/settings.js"
+    "seed:settings": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/settings.js",
+    "seed:services": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/services.js",
+    "seed:solutions": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/solutions.js",
+    "seed:articles": "npm run build && cross-env NODE_ENV=development node dist/scripts/seeds/articles.js",
+    "migration:generate": "cross-env NODE_ENV=development typeorm-ts-node-commonjs migration:generate -d src/data-source.ts",
+    "migration:create": "cross-env NODE_ENV=development typeorm-ts-node-commonjs migration:create",
+    "migration:run": "cross-env NODE_ENV=development typeorm-ts-node-commonjs migration:run -d src/data-source.ts",
+    "migration:revert": "cross-env NODE_ENV=development typeorm-ts-node-commonjs migration:revert -d src/data-source.ts",
+    "migration:show": "cross-env NODE_ENV=development typeorm-ts-node-commonjs migration:show -d src/data-source.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.0",
@@ -88,6 +96,7 @@
     "@types/supertest": "^6.0.3",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
+    "dotenv": "^17.2.3",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.4.0",
