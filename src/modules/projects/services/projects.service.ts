@@ -347,10 +347,6 @@ export class ProjectsService {
 
     const savedProject = await this.projectRepository.save(project);
 
-    if (previousImage) {
-      this.uploadService.deleteFiles([previousImage]);
-    }
-
     // Reload with relationships for response
     return this.getById(savedProject.id);
   }
@@ -360,10 +356,6 @@ export class ProjectsService {
 
     if (!project) {
       throw new NotFoundException('Project not found');
-    }
-
-    if (project.featuredImage) {
-      await this.uploadService.deleteFiles([project.featuredImage]);
     }
 
     await this.projectRepository.delete(id);

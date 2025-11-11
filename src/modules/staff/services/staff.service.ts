@@ -130,10 +130,6 @@ export class StaffService {
       throw new ForbiddenException('Cannot delete SuperAdmin');
     }
 
-    if (staff.image) {
-      await this.uploadService.deleteFiles([staff.image]);
-    }
-
     await this.staffRepository.remove(staff);
   }
 

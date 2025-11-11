@@ -193,12 +193,6 @@ export class ServicesService {
       if (exists) throw new ConflictException('Slug already exists');
     }
 
-    // Store current image for cleanup
-    let previousImage = null;
-    if (updateServiceDto.featuredImage) {
-      previousImage = service.featuredImage;
-    }
-
     // Handle solution associations
     if (updateServiceDto.solutionIds !== undefined) {
       const solutions = await this.solutionRepository.findBy({ id: In(updateServiceDto.solutionIds) });
@@ -210,10 +204,6 @@ export class ServicesService {
     Object.assign(service, serviceData);
 
     const savedService = await this.serviceRepository.save(service);
-
-    if (previousImage) {
-      this.uploadService.deleteFiles([previousImage]);
-    }
 
     // Reload with relationships for response
     return this.getById(savedService.id);
@@ -232,10 +222,6 @@ export class ServicesService {
 
     // Delete from project_services junction table
     await this.dataSource.query('DELETE FROM project_services WHERE service_id = $1', [id]);
-
-    if (service.featuredImage) {
-      await this.uploadService.deleteFiles([service.featuredImage]);
-    }
 
     await this.serviceRepository.delete(id);
   }

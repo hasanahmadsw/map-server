@@ -243,16 +243,7 @@ export class ArticlesService {
       article.topics = topics || [];
     }
 
-    let previousImage = null;
-    if (articleData.image) {
-      previousImage = article.image;
-    }
-
     const savedArticle = await this.articleRepository.save(article);
-
-    if (previousImage) {
-      this.uploadService.deleteFiles([previousImage]);
-    }
 
     // Reload with relationships for response
     return this.getById(savedArticle.id);
@@ -260,11 +251,6 @@ export class ArticlesService {
 
   async delete(id: number, author: StaffEntity): Promise<void> {
     const article = await this.findArticleAndValidateOwnership(id, author);
-
-    if (article.image) {
-      console.log('deleting image', article.image);
-      await this.uploadService.deleteFiles([article.image]);
-    }
 
     await this.articleRepository.delete(id);
   }

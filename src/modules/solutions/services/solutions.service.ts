@@ -184,20 +184,10 @@ export class SolutionsService {
       if (exists) throw new ConflictException('Slug already exists');
     }
 
-    // Store current image for cleanup
-    let previousImage = null;
-    if (updateSolutionDto.featuredImage) {
-      previousImage = solution.featuredImage;
-    }
-
     // Update basic solution data
     Object.assign(solution, updateSolutionDto);
 
     const savedSolution = await this.solutionRepository.save(solution);
-
-    if (previousImage) {
-      this.uploadService.deleteFiles([previousImage]);
-    }
 
     // Reload with relationships for response
     return this.getById(savedSolution.id);
@@ -208,10 +198,6 @@ export class SolutionsService {
 
     if (!solution) {
       throw new NotFoundException('Solution not found');
-    }
-
-    if (solution.featuredImage) {
-      await this.uploadService.deleteFiles([solution.featuredImage]);
     }
 
     await this.solutionRepository.delete(id);
