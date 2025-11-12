@@ -27,7 +27,8 @@ export class AuthGuard implements CanActivate {
     const payload: DecodedAccessTokenPayload = this.jwtService.verifyAccessToken(token);
     request.role = payload.role;
 
-    if (roles.length !== 0 && !roles.includes(payload.role)) {
+    // If roles are specified, check if the user's role is included
+    if (roles && roles.length > 0 && !roles.includes(payload.role)) {
       throw new ForbiddenException('You do not have permission to access this resource.');
     }
 

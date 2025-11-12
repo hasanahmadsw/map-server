@@ -22,15 +22,16 @@ import { Client } from 'pg';
           database: configService.get('POSTGRES_DATABASE'),
           entities: ['dist/**/*.entity{.ts,.js}'],
 
-          ...(!isDev
-            ? {
-                ssl: {
-                  rejectUnauthorized: false,
-                },
-              }
-            : {}),
+          // ...(!isDev
+          //   ? {
+          //       ssl: {
+          //         rejectUnauthorized: false,
+          //       },
+          //     }
+          //   : {}),
 
-          synchronize: true,
+          synchronize: false,
+          logging: true,
         };
       },
       inject: [ConfigService],
